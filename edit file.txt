@@ -1,0 +1,15 @@
+Browser test : 80.0.1
+
+edit file
+
+my.ini
+max_allowed_packet = 30M (default : 1M )
+innodb_log_file_size = 1024M (default : 5M )
+
+php.ini
+max_execution_time = 4500 (default : 30)
+max_input_time = 4500 (default : 60)
+memory_limit = 256M (default : 128M)
+max_allowed_package = 64M
+post_max_size = 0 (default : 2M)
+upload_max_filesize = 64M (default : 2M)
