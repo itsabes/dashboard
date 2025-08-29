@@ -321,7 +321,7 @@
                           <p class="card-title" style="font-size: 35px;"><strong>Catatan: </strong></p>
                           <ol class="card-title" style="font-size: 35px;">
                             <li>
-                              <p>Pendaftaran Online dapat dilakukan melalui via Aplikasi Mobile JKN dan Aplikasi JakSehat</p>
+                              <p>Pendaftaran Online dapat dilakukan melalui via Pelayanan SiYuko RSUD Sawah Besar, Aplikasi Mobile JKN dan Aplikasi JakSehat</p>
                             </li>
                             <li>
                               <p>Tanggal yang dipilih adalah tanggal kunjungan pasien di RSUD Sawah Besar</p>

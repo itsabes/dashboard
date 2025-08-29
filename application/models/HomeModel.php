@@ -678,6 +678,28 @@ class HomeModel extends CI_Model {
                     FROM referensi_mobilejkn_bpjs
                     WHERE tanggalperiksa BETWEEN ? AND ?
                     AND status <> 'batal'
+                ) +
+                (
+                    (
+                        SELECT COUNT(DISTINCT rp.no_rawat)
+                        FROM reg_periksa rp
+                        LEFT JOIN maping_poli_bpjs mp 
+                            ON rp.kd_poli = mp.kd_poli_rs
+                        LEFT JOIN booking_registrasi br 
+                            ON rp.no_rkm_medis = br.no_rkm_medis
+                        WHERE STR_TO_DATE(CONCAT(rp.tgl_registrasi, ' ', rp.jam_reg), '%Y-%m-%d %H:%i:%s')
+                            BETWEEN ? AND ?
+                        AND rp.stts != 'Batal'
+                        AND mp.kd_poli_bpjs IS NOT NULL
+                        AND rp.kd_poli NOT IN ('IGDK', 'KPN', 'P18', 'P33', 'P36', 'P39', 'U0083')
+                    ) -
+                    (
+                        SELECT COUNT(no_rkm_medis)
+                        FROM booking_registrasi
+                        WHERE tanggal_periksa BETWEEN ? AND ?
+                        AND limit_reg = '2. online'
+                        AND status <> 'batal'
+                    )
                 ) AS jumlah_online,
 
                 (
@@ -695,6 +717,28 @@ class HomeModel extends CI_Model {
                             FROM referensi_mobilejkn_bpjs
                             WHERE tanggalperiksa BETWEEN ? AND ?
                             AND status <> 'batal'
+                        ) +
+                        (
+                            (
+                                SELECT COUNT(DISTINCT rp.no_rawat)
+                                FROM reg_periksa rp
+                                LEFT JOIN maping_poli_bpjs mp 
+                                    ON rp.kd_poli = mp.kd_poli_rs
+                                LEFT JOIN booking_registrasi br 
+                                    ON rp.no_rkm_medis = br.no_rkm_medis
+                                WHERE STR_TO_DATE(CONCAT(rp.tgl_registrasi, ' ', rp.jam_reg), '%Y-%m-%d %H:%i:%s')
+                                    BETWEEN ? AND ?
+                                AND rp.stts != 'Batal'
+                                AND mp.kd_poli_bpjs IS NOT NULL
+                                AND rp.kd_poli NOT IN ('IGDK', 'KPN', 'P18', 'P33', 'P36', 'P39', 'U0083')
+                            ) -
+                            (
+                                SELECT COUNT(no_rkm_medis)
+                                FROM booking_registrasi
+                                WHERE tanggal_periksa BETWEEN ? AND ?
+                                AND limit_reg = '2. online'
+                                AND status <> 'batal'
+                            )
                         )
                     )
                 ) AS jumlah_onsite,
@@ -714,6 +758,28 @@ class HomeModel extends CI_Model {
                             FROM referensi_mobilejkn_bpjs
                             WHERE tanggalperiksa BETWEEN ? AND ?
                             AND status <> 'batal'
+                        ) +
+                        (
+                            (
+                                SELECT COUNT(DISTINCT rp.no_rawat)
+                                FROM reg_periksa rp
+                                LEFT JOIN maping_poli_bpjs mp 
+                                    ON rp.kd_poli = mp.kd_poli_rs
+                                LEFT JOIN booking_registrasi br 
+                                    ON rp.no_rkm_medis = br.no_rkm_medis
+                                WHERE STR_TO_DATE(CONCAT(rp.tgl_registrasi, ' ', rp.jam_reg), '%Y-%m-%d %H:%i:%s')
+                                    BETWEEN ? AND ?
+                                AND rp.stts != 'Batal'
+                                AND mp.kd_poli_bpjs IS NOT NULL
+                                AND rp.kd_poli NOT IN ('IGDK', 'KPN', 'P18', 'P33', 'P36', 'P39', 'U0083')
+                            ) -
+                            (
+                                SELECT COUNT(no_rkm_medis)
+                                FROM booking_registrasi
+                                WHERE tanggal_periksa BETWEEN ? AND ?
+                                AND limit_reg = '2. online'
+                                AND status <> 'batal'
+                            )
                         )
                     ) / COUNT(DISTINCT rp.no_rawat),
                     2
@@ -736,6 +802,28 @@ class HomeModel extends CI_Model {
                                 FROM referensi_mobilejkn_bpjs
                                 WHERE tanggalperiksa BETWEEN ? AND ?
                                 AND status <> 'batal'
+                            ) +
+                            (
+                                (
+                                    SELECT COUNT(DISTINCT rp.no_rawat)
+                                    FROM reg_periksa rp
+                                    LEFT JOIN maping_poli_bpjs mp 
+                                        ON rp.kd_poli = mp.kd_poli_rs
+                                    LEFT JOIN booking_registrasi br 
+                                        ON rp.no_rkm_medis = br.no_rkm_medis
+                                    WHERE STR_TO_DATE(CONCAT(rp.tgl_registrasi, ' ', rp.jam_reg), '%Y-%m-%d %H:%i:%s')
+                                        BETWEEN ? AND ?
+                                    AND rp.stts != 'Batal'
+                                    AND mp.kd_poli_bpjs IS NOT NULL
+                                    AND rp.kd_poli NOT IN ('IGDK', 'KPN', 'P18', 'P33', 'P36', 'P39', 'U0083')
+                                ) -
+                                (
+                                    SELECT COUNT(no_rkm_medis)
+                                    FROM booking_registrasi
+                                    WHERE tanggal_periksa BETWEEN ? AND ?
+                                    AND limit_reg = '2. online'
+                                    AND status <> 'batal'
+                                )
                             )
                         )
                     ) / COUNT(DISTINCT rp.no_rawat),
@@ -746,20 +834,30 @@ class HomeModel extends CI_Model {
             LEFT JOIN maping_poli_bpjs mp ON rp.kd_poli = mp.kd_poli_rs
             WHERE CONCAT(rp.tgl_registrasi, ' ', rp.jam_reg) BETWEEN ? AND ?
                 AND rp.stts != 'Batal'
-                AND mp.kd_poli_bpjs <> 'Null'
+                AND mp.kd_poli_bpjs IS NOT NULL
         ", [
             $from, $to,               // jumlah_online (booking)
             $from, $to,               // jumlah_online (mobilejkn)
+            $from . ' 00:00:00', $to . ' 23:59:59', // subquery online total kunjungan
+            $from, $to,               // jumlah_online - booking
             $from, $to,               // jumlah_onsite (booking)
             $from, $to,               // jumlah_onsite (mobilejkn)
+            $from . ' 00:00:00', $to . ' 23:59:59', // subquery onsite total kunjungan
+            $from, $to,               // jumlah_onsite - booking
             $from, $to,               // persen_online (booking)
             $from, $to,               // persen_online (mobilejkn)
+            $from . ' 00:00:00', $to . ' 23:59:59', // subquery persen_online total kunjungan
+            $from, $to,               // persen_online - booking
             $from, $to,               // persen_onsite (booking)
             $from, $to,               // persen_onsite (mobilejkn)
-            $from . ' 00:00:00', $to . ' 23:59:59' // total_kunjungan waktu
+            $from . ' 00:00:00', $to . ' 23:59:59', // subquery persen_onsite total kunjungan
+            $from, $to,               // persen_onsite - booking
+            $from . ' 00:00:00', $to . ' 23:59:59' // total_kunjungan waktu utama
         ]);
 
         return $query->row_array();
     }
 
-}
+
+
+}    
