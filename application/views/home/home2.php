@@ -426,19 +426,19 @@
     days = new Array('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu');
     h = date.getHours();
     if(h<10)
-    {
-    h = "0"+h;
-    }
-    m = date.getMinutes();
-    if(m<10)
-    {
-    m = "0"+m;
-    }
-    s = date.getSeconds();
-    if(s<10)
-    {
-    s = "0"+s;
-    }
+      {
+      h = "0"+h;
+      }
+      m = date.getMinutes();
+      if(m<10)
+      {
+      m = "0"+m;
+      }
+      s = date.getSeconds();
+      if(s<10)
+      {
+      s = "0"+s;
+      }
     result = ''+days[day]+', '+d+' '+months[month]+' '+year+' '+h+':'+m+':'+s+' WIB';
     document.getElementById(id).innerHTML = result;
     setTimeout('date_time("'+id+'");','1000');
