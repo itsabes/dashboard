@@ -25,8 +25,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 // $config['base_url'] = 'http://localhost/manajemen-bed/';
 // $config['base_url'] = 'https://rsudsawahbesar.jakarta.go.id/manajemen-bed/';
-$config['base_url']    = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '')
-                  .'://'.$_SERVER['HTTP_HOST'].str_replace('//','/',dirname($_SERVER['SCRIPT_NAME']).'/');
+// $config['base_url']    = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '')
+//                   .'://'.$_SERVER['HTTP_HOST'].str_replace('//','/',dirname($_SERVER['SCRIPT_NAME']).'/');
+
+// $config['base_url'] = 'https://rsudsawahbesar.jakarta.go.id/dashboard/';
+
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+    || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+
+$host = $_SERVER['HTTP_HOST'];
+
+// Deteksi otomatis subfolder dari SCRIPT_NAME
+$script_path = trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/');
+
+// Default base_url (otomatis)
+$base_url = $protocol . $host . '/' . ($script_path != '' ? $script_path . '/' : '');
+
+// Jika domain diakses langsung tanpa subfolder,
+// tapi aplikasi sebenarnya ada di /kesmik/, override manual.
+if ($host === 'rsudsawahbesar.jakarta.go.id' && $script_path == '') {
+    $base_url = $protocol . $host . '/dashboard/';
+}
+
+$config['base_url'] = $base_url;
 /*
 |--------------------------------------------------------------------------
 | Index File
